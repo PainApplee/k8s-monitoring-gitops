@@ -4370,7 +4370,6 @@ prometheus:
     ##
     storageSpec: {}
      #Using PersistentVolumeClaim
-    
       volumeClaimTemplate:
         spec:
           #storageClassName: gluster
