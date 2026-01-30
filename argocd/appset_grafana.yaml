@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: grafana
+            path: monitoring/charts/grafana
+
+  template:
+    metadata:
+      name: monitoring-{{name}}
+      annotations:
+        argocd.argoproj.io/sync-wave: "0"
+    spec:
+      project: default
+
+      source:
+        repoURL: https://github.com/PainApplee/k8s-monitoring-gitops.git
+        targetRevision: main
+        path: "{{path}}"
+        helm:
+          values: |
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

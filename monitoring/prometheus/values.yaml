@@ -1,4 +1,0 @@
-prometheus:
-  enabled: true
-  prometheusSpec:
-    replicas: 1
