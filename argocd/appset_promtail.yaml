@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: promtail
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: promtail
+            path: monitoring/charts/promtail
+
+  template:
+    metadata:
+      name: monitoring-promtail
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: default
+
+      source:
+        repoURL: https://github.com/PainApplee/k8s-monitoring-gitops.git
+        targetRevision: main
+        path: monitoring/charts/promtail
+        helm:
+          values: |
+            config:
+              clients:
+                - url: http://loki:3100/loki/api/v1/push
+
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+
+            tolerations:
+              - effect: NoSchedule
+                operator: Exists
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

@@ -12,7 +12,8 @@ spec:
 
   template:
     metadata:
-      name: '{{name}}'
+      name: monitoring-loki
+      annotations:
     spec:
       project: default
 
@@ -58,7 +59,7 @@ spec:
 
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{namespace}}'
+        namespace: monitoring
 
       syncPolicy:
         automated:
