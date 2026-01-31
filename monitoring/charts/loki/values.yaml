@@ -1,3 +1,17 @@
+# Safe-block: Disable Grafana Agent CRD to prevent unwanted installations
+grafana-agent-crds:
+  enabled: false
+
+grafanaAgent:
+  enabled: false
+
+agent:
+  enabled: false
+
+serviceMonitor:
+  enabled: false
+
+
 loki:
   enabled: true
   isDefault: false
