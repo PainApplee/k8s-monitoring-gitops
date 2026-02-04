@@ -19,11 +19,11 @@ spec:
       source:
         repoURL: https://github.com/PainApplee/k8s-monitoring-gitops.git
         targetRevision: main
-        path: monitoring/loki
+        path: monitoring/charts/loki
 
       destination:
         server: https://kubernetes.default.svc
-        namespace: logging
+        namespace: monitoring
 
       syncPolicy:
         automated:
