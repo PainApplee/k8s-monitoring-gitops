@@ -33,8 +33,17 @@ data:
             period: 24h
 
     limits_config:
+      volume_enabled: true
       reject_old_samples: true
       reject_old_samples_max_age: 168h
+    
+    query_range:
+      split_queries_by_interval: 15m
+      align_queries_with_step: true
+
+    querier:
+      engine:
+        timeout: 5m  
 
     analytics:
       reporting_enabled: false
