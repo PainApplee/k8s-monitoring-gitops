@@ -11,6 +11,21 @@ grafana:
   service:
     type: NodePort
     nodePort: 30000
+  persistence:
+    enabled: true
+    size: 5Gi
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.monitoring.svc.cluster.local:3100
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://monitoring-prometheus-server.monitoring.svc.cluster.local
 
 
 
