@@ -26,6 +26,14 @@ grafana:
         type: prometheus
         access: proxy
         url: http://monitoring-prometheus-server.monitoring.svc.cluster.local
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - host: grafana.159.203.154.51.nip.io
+        paths:
+          - path: /
+            pathType: Prefix
 
 
 
