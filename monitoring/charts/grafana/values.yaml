@@ -33,7 +33,10 @@ grafana:
       - grafana.159.203.154.51.nip.io
     path: /
     pathType: Prefix
-
+  grafana.ini:
+    server:
+      root_url: http://grafana.159.203.154.51.nip.io
+      serve_from_sub_path: false
 
 
 
