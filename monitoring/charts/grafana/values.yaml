@@ -30,7 +30,8 @@ grafana:
     enabled: true
     ingressClassName: nginx
     hosts:
-      - host: grafana.159.203.154.51.nip.io
+      - host:
+          - grafana.159.203.154.51.nip.io
         paths:
           - path: /
             pathType: Prefix
