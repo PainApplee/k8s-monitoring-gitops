@@ -14,7 +14,7 @@ spec:
     metadata:
       name: monitoring-prometheus
       annotations:
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "5"
     spec:
       project: default
 

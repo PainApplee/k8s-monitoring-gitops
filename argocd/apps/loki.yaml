@@ -13,8 +13,11 @@ spec:
   template:
     metadata:
       name: loki
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: default
+    
 
       source:
         repoURL: https://github.com/PainApplee/k8s-monitoring-gitops.git
