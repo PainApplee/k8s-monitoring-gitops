@@ -4,33 +4,86 @@ prometheus:
   url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
   datasource:
     jsonData: "{}"
-  ingress:
+  server:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - prometheus.159.203.154.51.nip.io
+      path: /
+      pathType: Prefix
+      tls:
+        - secretName: prometheus-tls
+          hosts:
+            - prometheus.159.203.154.51.nip.io
+
+  prometheusSpec:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+    retention: 2d
+    retentionSize: "256MB"
+    walCompression: true
+
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+    queryMaxConcurrency: 10
+    queryTimeout: 2m
+
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    podMonitorSelector: {}
+    podMonitorNamespaceSelector: {}
+    ruleSelector: {}
+    ruleNamespaceSelector: {}
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+    tsdb:
+      outOfOrderAllowance: 30m
+      maxBlockDuration: 6h
+      minBlockDuration: 2h
+
+  alertmanager:
+    enabled: false
+
+  nodeExporter:
     enabled: true
-    ingressClassName: nginx
-    hosts:
-      - prometheus.159.203.154.51.nip.io
-    path: /
-    pathType: Prefix
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
 
-
-
-
-# prometheus:
-#   prometheusSpec:
-#     serviceMonitorSelector: {}
-#     podMonitorSelector: {}
-#     ruleSelector: {}
-#     serviceAccountName: "prometheus-sa"
-
-#   server:
-#     service:
-#       type: NodePort
-#       nodePort: 32001
-
-# alertmanager:
-#   enabled: true
-#   alertmanagerSpec:
-#     serviceAccountName: "alertmanager-sa"
-
-# grafana:
-#   enabled: false # set up separately
+  serverFiles:
+    prometheus.yml:
+      scrape_configs:
+        - job_name: 'kubernetes-apiservers'
+          kubernetes_sd_configs:
+            - role: endpoints
+          scheme: https
+          tls_config:
+            ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+          relabel_configs:
+            - source_labels: [__meta_kubernetes_service_name]
+              regex: kubernetes
+              action: keep
+            - source_labels: [__meta_kubernetes_endpoint_port_name]
+              regex: https
+              action: keep
