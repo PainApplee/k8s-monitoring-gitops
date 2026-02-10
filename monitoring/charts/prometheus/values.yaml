@@ -17,7 +17,7 @@ prometheus:
       tls:
         - secretName: prometheus-tls
           hosts:
-            - prometheus.159.203.154.51.nip.io
+        - prometheus.{LP_IP}.nip.io
 
   prometheusSpec:
     resources:
